@@ -6,4 +6,6 @@ authors:
 
 crystal: 0.25.1
 
+dependencies:
+
 license: MIT

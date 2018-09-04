@@ -117,14 +117,28 @@ EC_VERBOSE=false
     prefix = "02"
     prefix = "03" if point.y % 2 == 1  # e.g. odd
 
-    hexval = point.x.to_s 16
+    "#{prefix}#{coord_hex64(point.x)}"
+  end
+
+  #--------------------------------------------------------------
+  # return hex string of bigint. prepend '0' until 64-chars long
+  #--------------------------------------------------------------
+  def self.coord_hex64(x : BigInt)
+    hexval = x.to_s 16
 
     # prepend '0' chars until 64 chars in length
     while (hexval.size < 64)
       hexval = '0' + hexval
     end
 
-    "#{prefix}#{hexval}"
+    hexval
+  end
+
+  #--------------------------------------------------------------
+  # long point format
+  #--------------------------------------------------------------
+  def self.pubkey_format4(point)
+    "04#{coord_hex64(point.x)}#{coord_hex64(point.y)}"
   end
 
   #--------------------------------------------------------------
