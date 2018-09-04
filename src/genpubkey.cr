@@ -1,11 +1,16 @@
 require "./bitcoinutil/*"
 require "big/big_int"
 
+# generates public key for private key
+
 if ARGV.size < 1
   puts "usage: genpubkey <private_key_hex_string> "
   exit 2
 end
 
+#--------------------------------------------------------------------
+# parses BigInt value from hex or decimal string representation
+#--------------------------------------------------------------------
 def get_intval (str)
   str = str.downcase
   if str.size >= 3
@@ -29,6 +34,6 @@ end
 
 privkey = get_intval ARGV[0]
 
-end_point = SecP256K1.sequence EC_GP, privkey
+end_point = SecP256K1.sequence SecP256K1::EC_GP, privkey
 pubkey = SecP256K1.pubkey_format end_point
 puts "#{pubkey}"

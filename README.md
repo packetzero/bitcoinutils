@@ -7,7 +7,9 @@ This started with a port of [James D'Angelo's Python scripts](https://github.com
 Functionality:
  - generate public key
  - sign data
- - verify data
+ - verify signature
+
+ The basic unit tests in [spec/bitcoinutil_spec.cr](./spec/bitcoinutil_spec.cr) can be run using `crystal spec`.  The "generates public key JD" and "signs and verifies JD" checks expected values given parameters in JD's code.
 
 ## Contributors
 
