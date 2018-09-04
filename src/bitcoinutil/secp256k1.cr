@@ -1,3 +1,4 @@
+require "big/big_int"
 
 # Below are the public specs for Bitcoin's curve - the secp256k1
 # Based on https://github.com/wobine/blackboard101

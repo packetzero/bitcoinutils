@@ -2,7 +2,30 @@ require "openssl"
 
 module BC
 
-  BASE58S="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+  #-----------------------------------------------------------------------
+  # make_address
+  # returns 
+  #-----------------------------------------------------------------------
+  def self.make_address(pubkey : String)
+
+    raise Exception.new "Needs to be in uncompressed point format with '04' prefix" if pubkey.size != (2+64+64) || pubkey[1] != '4'
+
+    tmp =  sha256(pubkey.hexbytes)
+    hash = prepend(0_u8, ripe160(tmp))
+
+    tmp = sha256(sha256(hash))
+    checksum = tmp[0,4]
+    data = concat(hash, checksum)
+
+    "1#{base58(data)}"
+  end
+
+  def self.sha256(bytes : Bytes)
+    OpenSSL::Digest.new("SHA256").update(bytes).digest
+  end
+  def self.ripe160(bytes : Bytes)
+    OpenSSL::Digest.new("RIPEMD160").update(bytes).digest
+  end
 
   def self.concat(a : Bytes, b : Bytes)
     tmp = Bytes.new(a.size + b.size)
@@ -18,28 +41,21 @@ module BC
     tmp
   end
 
-  def self.make_address(pubkey : String)
+  BASE58S="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
-    raise Exception.new "Needs to be in uncompressed point format with '04' prefix" if pubkey.size != (2+64+64) || pubkey[1] != '4'
+  def self.base58(bytes : Bytes)
+    base58 bytes.hexstring
+  end
 
-    bytes = pubkey.hexbytes
-    tmp =  OpenSSL::Digest.new("SHA256").update(bytes).digest
-    hash = prepend(0_u8, OpenSSL::Digest.new("RIPEMD160").update(tmp).digest)
-
-    first = OpenSSL::Digest.new("SHA256").update(hash).digest
-    tmp = OpenSSL::Digest.new("SHA256").update(first).digest
-    checksum = tmp[0,4]
-    data = concat(hash, checksum)
-
-    num = BigInt.new data.hexstring, 16
+  def self.base58(hexstr : String)
+    num = BigInt.new hexstr, 16
     s = ""
     while num > 0
       num, idx = num.divmod 58
       s += BASE58S[idx]
     end
-
-    "1#{s.reverse}"
-
+    s.reverse
   end
+
 
 end
