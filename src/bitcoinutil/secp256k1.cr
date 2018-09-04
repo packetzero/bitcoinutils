@@ -148,6 +148,7 @@ EC_VERBOSE=false
   def self.rand()
     r = Random.new
     val = EC_FIELD_SIZE / (r.rand(57) + 1) * r.next_u / Int32::MAX
+    val % EC_FIELD_SIZE
   end
 
   #--------------------------------------------------------------

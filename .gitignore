@@ -4,6 +4,8 @@
 /.shards/
 *.dwarf
 /genpubkey
+/genaddrs
+/out.csv
 
 # Libraries don't need dependency lock
 # Dependencies will be locked in application that uses them
