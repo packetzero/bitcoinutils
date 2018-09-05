@@ -143,11 +143,15 @@ EC_VERBOSE=false
   end
 
   #--------------------------------------------------------------
-  # TODO: make reliable BigInt random numbers
+  # Return a random number up to 160 bits
   #--------------------------------------------------------------
   def self.rand()
+    s = ""
     r = Random.new
-    val = EC_FIELD_SIZE / (r.rand(57) + 1) * r.next_u / Int32::MAX
+    5.times do
+      s += r.next_u.to_s(2)
+    end
+    val = BigInt.new s,2
     val % EC_FIELD_SIZE
   end
 
